@@ -1,6 +1,6 @@
-import chessPiece
 class chessBoard:
     def __init__(self):
+        self.possiblePieces = []
         self.width = 8; self.height = 8
         self.size = (self.width, self.height)
         self.clicked = None
