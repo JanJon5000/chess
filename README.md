@@ -1,2 +1,2 @@
 # chess
-the game based on a really old idea - done with puthon pygame framewok
+the game based on a really old idea - done with python pygame framewok

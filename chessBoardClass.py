@@ -12,6 +12,8 @@ class chessBoard:
                 line.append(None)
             self.boardModel.append(line)
 
-        self.boardModel[0] = self.boardModel[-1] = possiblePieces
-        self.boardModel[1] = self.boardModel[-2] = ['pawn' for _ in range(self.width)]
+        self.boardModel[0] = ['black' + piece.capitalize() for piece in possiblePieces]
+        self.boardModel[-1] = ['white' + piece.capitalize() for piece in possiblePieces]
+        self.boardModel[1] = ['blackPawn' for _ in range(self.width)]
+        self.boardModel[-2] = ['whitePawn' for _ in range(self.width)]
         
