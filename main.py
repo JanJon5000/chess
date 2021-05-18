@@ -3,7 +3,7 @@ from pprint import pprint
 from math import ceil
 from pygame.constants import MOUSEBUTTONDOWN
 import chessBoardClass
-from usefullFunctions import setUptheBoard, findTheSquare
+from usefullFunctions import setUptheBoard, findTheSquare, checkIfTheMoveIsPossible
 pygame.init()
 
 pieces = ['whitePawn', 'blackPawn', 'whiteRook', 'blackRook', 'whiteKnight', 'blackKnight', 'whiteBishop', 'blackBishop', 
@@ -16,6 +16,9 @@ chessBoard = chessBoardClass.chessBoard()
 screen = pygame.display.set_mode((400, 400))
 secondClick = False
 running = True
+clickedButton = None
+mouseSignature = None
+destinationButton = None
 
 mode = 'preparingToPickUpAPiece'
 
@@ -28,8 +31,7 @@ while running:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_position = event.pos
                 clickedButton = findTheSquare(mouse_position, listOfSquares)
-                mouseSignature = chessBoard.boardModel[int(clickedButton.y/100)][int(clickedButton.x/100)]
-                chessBoard.boardModel[int(clickedButton.y/100)][int(clickedButton.x/100)] = None                
+                mouseSignature = chessBoard.boardModel[int(clickedButton.y/100)][int(clickedButton.x/100)]            
                 mode = 'pickedUpAPiece'
     if mode == 'pickedUpAPiece':
         for event in pygame.event.get():
@@ -37,9 +39,12 @@ while running:
                 running = False
             if event.type == pygame.MOUSEBUTTONUP:
                 mouse_position = event.pos
-                img = pygame.image.load(f'C:\\VSCODE\\projekt pygame\\chess\\img\\{mouseSignature}.png')
-                img = pygame.transform.smoothscale(img, (squareSize, squareSize))
-                setUptheBoard(chessBoard, screen, chessBoard.boardModel, listOfSquares, dictOfSquares)
-                screen.blit(img, (mouse_position[0]-squareSize/2, mouse_position[1]-squareSize/2))
+                destinationButton = findTheSquare(mouse_position, listOfSquares)
+                if checkIfTheMoveIsPossible(chessBoard, clickedButton, destinationButton):
+                    chessBoard.boardModel[int(destinationButton.y/100)][int(destinationButton.x/100)] = mouseSignature
+                    chessBoard.boardModel[int(clickedButton.y/100)][int(clickedButton.x/100)] = None
+                    setUptheBoard(chessBoard, screen, chessBoard.boardModel, listOfSquares, dictOfSquares)
+                    
+                
                 mode = 'preparingToPickUpAPiece'
     pygame.display.update()

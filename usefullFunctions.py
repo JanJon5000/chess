@@ -48,9 +48,9 @@ def findTheSquare(mousePosition, listOfButtons):
 def checkIfTheMoveIsPossible(chessBoard, StartButton, FinishButton):
     row = int(StartButton.x/squareSize)
     column = int(StartButton.y/squareSize)
-    color = chessBoard.boardModel[column][row][0:5]
-    print(color)
     possibleSquares = []
+    if chessBoard.boardModel[column][row] == None:
+        return False
     if 'Bishop' in chessBoard.boardModel[column][row]:
         pass
     elif 'Rook' in chessBoard.boardModel[column][row]:
@@ -58,7 +58,22 @@ def checkIfTheMoveIsPossible(chessBoard, StartButton, FinishButton):
     elif 'King' in chessBoard.boardModel[column][row]:
         pass
     elif 'Pawn' in chessBoard.boardModel[column][row]:
-        pass
+        if chessBoard.boardModel[column][row] != None:
+            if chessBoard.boardModel[column][row][0:5] == 'black':
+                try:
+                    if chessBoard.boardModel[column+1][row] == None:
+                        possibleSquares.append(pygame.Rect(row*squareSize, (column+1)*squareSize, squareSize, squareSize))
+                    if column == 1 and chessBoard.boardModel[column+2][row] == None:
+                        possibleSquares.append(pygame.Rect(row*squareSize, (column+2)*squareSize, squareSize, squareSize))
+                    if chessBoard.boardModel[column+1][row+1] != None:
+                        possibleSquares.append(pygame.Rect((row+1)*squareSize, (column+1)*squareSize, squareSize, squareSize))
+                    if chessBoard.boardModel[column+1][row-1] != None:
+                        possibleSquares.append(pygame.Rect((row-1)*squareSize, (column+1)*squareSize, squareSize, squareSize))
+                except:
+                    pass
+            elif chessBoard.boardModel[column][row][0:5] == 'white':
+                pass
+            print(possibleSquares)
     elif 'Queen' in chessBoard.boardModel[column][row]:
         pass
     elif 'Knight' in chessBoard.boardModel[column][row]:
