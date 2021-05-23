@@ -18,4 +18,4 @@ class chessBoard:
         #self.boardModel[1] = ['blackPawn' for _ in range(self.width)]
         #self.boardModel[-2] = ['whitePawn' for _ in range(self.width)]
 
-        self.boardModel[5][5] = 'blackKnight'
+        self.boardModel[5][5] = 'blackRook'
