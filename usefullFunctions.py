@@ -61,77 +61,100 @@ def checkIfTheMoveIsPossible(chessBoard, StartButton, FinishButton):
     if chessBoard.boardModel[column][row] == None:
         return False
     if 'Bishop' in chessBoard.boardModel[column][row]:
-        pass
+        if chessBoard.boardModel[column][row][0:5] == 'black':
+            color = 'black'
+        elif chessBoard.boardModel[column][row][0:5] == 'white':
+            color = 'white'
     elif 'Rook' in chessBoard.boardModel[column][row]:
         if chessBoard.boardModel[column][row][0:5] == 'black':
             color = 'black'
         elif chessBoard.boardModel[column][row][0:5] == 'white':
             color = 'white'
-        x = 0
-        
+
+        for index in range(4):
+            for ammount in [1, 2, 3, 4, 5, 6, 7, 8]:
+                helpDictionary = {  0:{'column':column+ammount, 'row':row},
+                                    1:{'column':column-ammount, 'row':row},
+                                    2:{'column':column, 'row':row+ammount},
+                                    3:{'column':column, 'row':row-ammount}    }
+                try:
+                    c = helpDictionary[index]['column']
+                    r = helpDictionary[index]['row']
+                except:
+                    pass
+                try:
+                    square = chessBoard.boardModel[c][r]
+                except:
+                    break
+                try:
+                    if square == None:
+                        possibleSquares.append(pygame.Rect(r*squareSize, c*squareSize, squareSize, squareSize))
+                    elif color in chessBoard.boardModel[c][r]:
+                        break
+                    else:
+                        possibleSquares.append(pygame.Rect(r*squareSize, c*squareSize, squareSize, squareSize))
+                        break
+                except:
+                    pass
     elif 'King' in chessBoard.boardModel[column][row]:
         if chessBoard.boardModel[column][row][0:5] == 'black':
             color = 'black'
         elif chessBoard.boardModel[column][row][0:5] == 'white':
             color = 'white'
-        if ifItIsACheck(chessBoard, color) == False:
-            for change1 in (1, -1):
-                for change2 in (-1, 0, 1):
-                    try:
-                        if chessBoard.boardModel[column-change1][row-change2] == None and ifItIsACheck(chessBoard, color) == False:
-                            possibleSquares.append(pygame.Rect((row-change2)*squareSize, (column-change1)*squareSize, squareSize, squareSize))
-                        elif color not in chessBoard.boardModel[column-change1][row-change2] and ifItIsACheck(chessBoard, color) == False:
-                            possibleSquares.append(pygame.Rect((row-change2)*squareSize, (column-change1)*squareSize, squareSize, squareSize))
-                    except:
-                        pass
-                    try:
-                        if chessBoard.boardModel[column-change2][row-change1] == None and ifItIsACheck(chessBoard, color) == False:
-                            possibleSquares.append(pygame.Rect((row-change1)*squareSize, (column-change2)*squareSize, squareSize, squareSize))
-                        elif color not in chessBoard.boardModel[column-change2][row-change1] and ifItIsACheck(chessBoard, color) == False:
-                            possibleSquares.append(pygame.Rect((row-change1)*squareSize, (column-change2)*squareSize, squareSize, squareSize))
-                    except:
-                        pass
-        else:
-            pass
+        for change1 in (1, -1):
+            for change2 in (-1, 0, 1):
+                try:
+                    if chessBoard.boardModel[column-change1][row-change2] == None:
+                        possibleSquares.append(pygame.Rect((row-change2)*squareSize, (column-change1)*squareSize, squareSize, squareSize))
+                    elif color not in chessBoard.boardModel[column-change1][row-change2]:
+                        possibleSquares.append(pygame.Rect((row-change2)*squareSize, (column-change1)*squareSize, squareSize, squareSize))
+                except:
+                    pass
+                try:
+                    if chessBoard.boardModel[column-change2][row-change1] == None:
+                        possibleSquares.append(pygame.Rect((row-change1)*squareSize, (column-change2)*squareSize, squareSize, squareSize))
+                    elif color not in chessBoard.boardModel[column-change2][row-change1]:
+                        possibleSquares.append(pygame.Rect((row-change1)*squareSize, (column-change2)*squareSize, squareSize, squareSize))
+                except:
+                    pass
     elif 'Pawn' in chessBoard.boardModel[column][row]:
         if chessBoard.boardModel[column][row] != None:
-                if chessBoard.boardModel[column][row][0:5] == 'black':
-                    try:
-                        if chessBoard.boardModel[column+1][row] == None and ifItIsACheck(chessBoard, 'black') == False:
-                            possibleSquares.append(pygame.Rect(row*squareSize, (column+1)*squareSize, squareSize, squareSize))
-                        if column == 1 and chessBoard.boardModel[column+2][row] == None and ifItIsACheck(chessBoard, 'black') == False:
-                            possibleSquares.append(pygame.Rect(row*squareSize, (column+2)*squareSize, squareSize, squareSize))
-                    except:
-                        pass
-                    try:
-                        if chessBoard.boardModel[column+1][row+1] != None and 'black' not in chessBoard.boardModel[column+1][row+1] and ifItIsACheck(chessBoard, 'black') == False:
-                            possibleSquares.append(pygame.Rect((row+1)*squareSize, (column+1)*squareSize, squareSize, squareSize))
-                    except:
-                        pass
-                    try:
-                        if chessBoard.boardModel[column+1][row-1] != None and 'black' not in chessBoard.boardModel[column+1][row-1] and ifItIsACheck(chessBoard, 'black') == False:
-                            possibleSquares.append(pygame.Rect((row-1)*squareSize, (column+1)*squareSize, squareSize, squareSize))
-                    except:
-                        pass
-                elif chessBoard.boardModel[column][row][0:5] == 'white':
-                    try:
-                        if chessBoard.boardModel[column-1][row] == None :
-                            possibleSquares.append(pygame.Rect(row*squareSize, (column-1)*squareSize, squareSize, squareSize))
-                        if column == chessBoard.height-2 and chessBoard.boardModel[column-2][row] == None:
-                            possibleSquares.append(pygame.Rect(row*squareSize, (column-2)*squareSize, squareSize, squareSize))
-                    except:
-                        pass
-                    try:
-                        if chessBoard.boardModel[column-1][row-1] != None and 'white' not in chessBoard.boardModel[column-1][row-1] :
-                            possibleSquares.append(pygame.Rect((row-1)*squareSize, (column-1)*squareSize, squareSize, squareSize))
-                    except:
-                        pass
-                    try:
-                        if chessBoard.boardModel[column-1][row+1] != None and 'white' not in chessBoard.boardModel[column-1][row+1] :
-                            possibleSquares.append(pygame.Rect((row+1)*squareSize, (column-1)*squareSize, squareSize, squareSize))
-                    except:
-                        pass
-                pass
+            if chessBoard.boardModel[column][row][0:5] == 'black':
+                try:
+                    if chessBoard.boardModel[column+1][row] == None:
+                        possibleSquares.append(pygame.Rect(row*squareSize, (column+1)*squareSize, squareSize, squareSize))
+                    if column == 1 and chessBoard.boardModel[column+2][row] == None:
+                        possibleSquares.append(pygame.Rect(row*squareSize, (column+2)*squareSize, squareSize, squareSize))
+                except:
+                    pass
+                try:
+                    if chessBoard.boardModel[column+1][row+1] != None and 'black' not in chessBoard.boardModel[column+1][row+1]:
+                        possibleSquares.append(pygame.Rect((row+1)*squareSize, (column+1)*squareSize, squareSize, squareSize))
+                except:
+                    pass
+                try:
+                    if chessBoard.boardModel[column+1][row-1] != None and 'black' not in chessBoard.boardModel[column+1][row-1] :
+                        possibleSquares.append(pygame.Rect((row-1)*squareSize, (column+1)*squareSize, squareSize, squareSize))
+                except:
+                    pass
+            elif chessBoard.boardModel[column][row][0:5] == 'white':
+                try:
+                    if chessBoard.boardModel[column-1][row] == None :
+                        possibleSquares.append(pygame.Rect(row*squareSize, (column-1)*squareSize, squareSize, squareSize))
+                    if column == chessBoard.height-2 and chessBoard.boardModel[column-2][row] == None:
+                        possibleSquares.append(pygame.Rect(row*squareSize, (column-2)*squareSize, squareSize, squareSize))
+                except:
+                    pass
+                try:
+                    if chessBoard.boardModel[column-1][row-1] != None and 'white' not in chessBoard.boardModel[column-1][row-1] :
+                        possibleSquares.append(pygame.Rect((row-1)*squareSize, (column-1)*squareSize, squareSize, squareSize))
+                except:
+                    pass
+                try:
+                    if chessBoard.boardModel[column-1][row+1] != None and 'white' not in chessBoard.boardModel[column-1][row+1] :
+                        possibleSquares.append(pygame.Rect((row+1)*squareSize, (column-1)*squareSize, squareSize, squareSize))
+                except:
+                    pass
     elif 'Queen' in chessBoard.boardModel[column][row]:
         pass
     elif 'Knight' in chessBoard.boardModel[column][row]:
@@ -143,16 +166,16 @@ def checkIfTheMoveIsPossible(chessBoard, StartButton, FinishButton):
         possibleMoves = [ (-2, (-1, 1)), (-1, (-2, 2)), (2, (-1, 1)), (1, (-2, 2))]
         for coordinates in possibleMoves:
             try:
-                if chessBoard.boardModel[column-coordinates[0]][row-coordinates[1][0]] == None and ifItIsACheck(chessBoard, color) == False:
+                if chessBoard.boardModel[column-coordinates[0]][row-coordinates[1][0]] == None:
                     possibleSquares.append(pygame.Rect((row-coordinates[1][0])*squareSize, (column-coordinates[0])*squareSize, squareSize, squareSize))
-                elif color not in chessBoard.boardModel[column-coordinates[0]][row-coordinates[1][0]] and ifItIsACheck(chessBoard, color) == False:
+                elif color not in chessBoard.boardModel[column-coordinates[0]][row-coordinates[1][0]]:
                     possibleSquares.append(pygame.Rect((row-coordinates[1][0])*squareSize, (column-coordinates[0])*squareSize, squareSize, squareSize))
             except:
                 pass
             try:
-                if chessBoard.boardModel[column-coordinates[0]][row-coordinates[1][1]] == None and ifItIsACheck(chessBoard, color) == False:
+                if chessBoard.boardModel[column-coordinates[0]][row-coordinates[1][1]] == None:
                     possibleSquares.append(pygame.Rect((row-coordinates[1][1])*squareSize, (column-coordinates[0])*squareSize, squareSize, squareSize))
-                elif color not in chessBoard.boardModel[column-coordinates[0]][row-coordinates[1][1]] and ifItIsACheck(chessBoard, color) == False:
+                elif color not in chessBoard.boardModel[column-coordinates[0]][row-coordinates[1][1]]:
                     possibleSquares.append(pygame.Rect((row-coordinates[1][1])*squareSize, (column-coordinates[0])*squareSize, squareSize, squareSize))
             except:
                 pass
