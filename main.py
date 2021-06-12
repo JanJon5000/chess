@@ -40,7 +40,7 @@ while running:
             if event.type == pygame.MOUSEBUTTONUP:
                 mouse_position = event.pos
                 destinationButton = findTheSquare(mouse_position, listOfSquares)
-                if checkIfTheMoveIsPossible(chessBoard, clickedButton, destinationButton):
+                if checkIfTheMoveIsPossible(screen, chessBoard, clickedButton, destinationButton):
                     #autopromotion to queen - change that in the future
                     if (destinationButton.y/100 == chessBoard.height-1 or destinationButton.y/100 == 0) and 'Pawn' in chessBoard.boardModel[int(clickedButton.y/100)][int(clickedButton.x/100)]:
                         chessBoard.boardModel[int(destinationButton.y/100)][int(destinationButton.x/100)] = mouseSignature[0:5] + 'Queen'
@@ -49,6 +49,5 @@ while running:
                     chessBoard.boardModel[int(clickedButton.y/100)][int(clickedButton.x/100)] = None
                     setUptheBoard(chessBoard, screen, chessBoard.boardModel, listOfSquares, dictOfSquares)
                     
-                
                 mode = 'preparingToPickUpAPiece'
     pygame.display.update()
