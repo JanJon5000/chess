@@ -46,58 +46,15 @@ def findTheSquare(mousePosition, listOfButtons):
             return button
 
 def ifItIsACheck(screen, chessBoard, color: str):
-    column = 4
-    row = 4
-    possibleChecks = []
-    actualChecks = []
-    for index in range(8):
-            for ammount in [1, 2, 3, 4, 5, 6, 7, 8]:
-                helpDictionary = {  0:{'column':column+ammount, 'row':row+ammount},
-                                    1:{'column':column-ammount, 'row':row-ammount},
-                                    2:{'column':column-ammount, 'row':row+ammount},
-                                    3:{'column':column+ammount, 'row':row-ammount},
-                                    4:{'column':column, 'row':row+ammount},
-                                    5:{'column':column, 'row':row-ammount},
-                                    6:{'column':column+ammount, 'row':row},
-                                    7:{'column':column-ammount, 'row':row}       }
-                try:
-                    c = helpDictionary[index]['column']
-                    r = helpDictionary[index]['row']
-                except:
-                    pass
-                try:
-                    square = chessBoard.boardModel[c][r]
-                except:
-                    break
-                try:
-                    if square == None:
-                        possibleChecks.append(pygame.Rect(r*squareSize, c*squareSize, squareSize, squareSize))
-                    elif color in chessBoard.boardModel[c][r]:
-                        break
-                    else:
-                        possibleChecks.append(pygame.Rect(r*squareSize, c*squareSize, squareSize, squareSize))
-                        break
-                except:
-                    pass
-    possibleMoves = [ (-2, (-1, 1)), (-1, (-2, 2)), (2, (-1, 1)), (1, (-2, 2))]
-    for coordinates in possibleMoves:
-        try:
-            if chessBoard.boardModel[column-coordinates[0]][row-coordinates[1][0]] == None:
-                possibleChecks.append(pygame.Rect((row-coordinates[1][0])*squareSize, (column-coordinates[0])*squareSize, squareSize, squareSize))
-            elif color in chessBoard.boardModel[column-coordinates[0]][row-coordinates[1][0]]:
-                possibleChecks.append(pygame.Rect((row-coordinates[1][0])*squareSize, (column-coordinates[0])*squareSize, squareSize, squareSize))
-                actualChecks.append(pygame.Rect((row-coordinates[1][0])*squareSize, (column-coordinates[0])*squareSize, squareSize, squareSize))
-        except:
-            pass
-        try:
-            if chessBoard.boardModel[column-coordinates[0]][row-coordinates[1][1]] == None:
-                possibleChecks.append(pygame.Rect((row-coordinates[1][1])*squareSize, (column-coordinates[0])*squareSize, squareSize, squareSize))
-            elif color not in chessBoard.boardModel[column-coordinates[0]][row-coordinates[1][1]]:
-                possibleChecks.append(pygame.Rect((row-coordinates[1][1])*squareSize, (column-coordinates[0])*squareSize, squareSize, squareSize))
-                actualChecks.append(pygame.Rect((row-coordinates[1][1])*squareSize, (column-coordinates[0])*squareSize, squareSize, squareSize))
-        except:
-            pass
-    print(actualChecks)
+    actualMoves = []
+    r = 0
+    c = 0
+    for row in chessBoard.boardModel:
+        for piece in row:
+            if piece == color + 'King':
+                r = row.index(piece)
+                c = chessBoard.boardModel.index(row)
+
     return False
 
 def checkIfTheMoveIsPossible(screen, chessBoard, StartButton, FinishButton):
@@ -191,6 +148,10 @@ def checkIfTheMoveIsPossible(screen, chessBoard, StartButton, FinishButton):
                 except:
                     pass
     elif 'Pawn' in chessBoard.boardModel[column][row]:
+        if chessBoard.boardModel[column][row][0:5] == 'black':
+            color = 'black'
+        elif chessBoard.boardModel[column][row][0:5] == 'white':
+            color = 'white'
         if chessBoard.boardModel[column][row] != None:
             if chessBoard.boardModel[column][row][0:5] == 'black':
                 try:
@@ -289,6 +250,5 @@ def checkIfTheMoveIsPossible(screen, chessBoard, StartButton, FinishButton):
         pass
     if FinishButton not in possibleSquares:
         return False
-
     return True
 
