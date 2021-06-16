@@ -47,6 +47,7 @@ def findTheSquare(mousePosition, listOfButtons):
 
 def ifItIsACheck(screen, chessBoard, color: str):
     actualMoves = []
+    dangers = []
     r = 0
     c = 0
     for row in chessBoard.boardModel:
@@ -54,7 +55,48 @@ def ifItIsACheck(screen, chessBoard, color: str):
             if piece == color + 'King':
                 r = row.index(piece)
                 c = chessBoard.boardModel.index(row)
-
+    for index in range(4):
+        for ammount in [ _ for _ in range(1, 8)]:
+            moves = {  0:{'column':c+ammount, 'row':r+ammount},
+                        1:{'column':c-ammount, 'row':r-ammount},
+                        2:{'column':c-ammount, 'row':r+ammount},
+                        3:{'column':c+ammount, 'row':r-ammount},
+                        4:{'column':c, 'row':r+ammount},
+                        5:{'column':c, 'row':r-ammount},
+                        6:{'column':c+ammount, 'row':r},
+                        7:{'column':c-ammount, 'row':r}       }
+            try:
+                column = moves[index]['column']
+                row = moves[index]['row']
+            except:
+                pass
+            try:
+                square = chessBoard.boardModel[column][row]
+            except:
+                break
+            try:
+                if square == None:
+                    continue
+                elif color in square:
+                    break
+                elif not column < 0 and not row < 0:
+                    dangers.append({'piece':square, 'column':column, 'row':row})
+                    break
+            except:
+                pass
+    moves = [(-2, (-1, 1)), (-1, (-2, 2)), (2, (-1, 1)), (1, (-2, 2))]
+    for coordinates in moves:
+        try:
+            if 'Knight' in chessBoard.boardModel[c-coordinates[0]][r-coordinates[1][0]] and color not in chessBoard.boardModel[c-coordinates[0]][r-coordinates[1][0]] and c-coordinates[0] >= 0 and r-coordinates[1][0] >= 0:
+                dangers.append({'piece':chessBoard.boardModel[c-coordinates[0]][r-coordinates[1][0]], 'column':c-coordinates[0], 'row':r-coordinates[1][0]})
+        except:
+            pass
+        try:
+            if 'Knight' in chessBoard.boardModel[c-coordinates[0]][r-coordinates[1][1]] and color not in chessBoard.boardModel[c-coordinates[0]][r-coordinates[1][1]] and c-coordinates[0] >= 0 and r-coordinates[1][1] >= 0:
+                dangers.append({'piece':chessBoard.boardModel[c-coordinates[0]][r-coordinates[1][1]], 'column':c-coordinates[0], 'row':r-coordinates[1][1]})
+        except:
+            pass
+    print(dangers)
     return False
 
 def checkIfTheMoveIsPossible(screen, chessBoard, StartButton, FinishButton):
