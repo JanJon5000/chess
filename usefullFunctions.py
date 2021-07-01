@@ -31,7 +31,7 @@ def setUptheBoard(chessBoard: chessBoardClass.chessBoard, screen, boardPosition:
         for row in range(len(boardPosition[column])):
             for square in listOfSquares:
                 if square.centerx == squareSize/2+column*squareSize and square.centery == squareSize/2+row*squareSize and boardPosition[column][row] != None:
-                    img = pygame.image.load(f'C:\\VSCODE\\projekt pygame\\chess\\img\\{boardPosition[column][row]}.png')
+                    img = pygame.image.load(f'img\\{boardPosition[column][row]}.png')
                     img = pygame.transform.smoothscale(img, (squareSize, squareSize))
                     screen.blit(img, (row*squareSize, column*squareSize))
 
