@@ -10,7 +10,7 @@ destinationButton = None
 pieces = ['whitePawn', 'blackPawn', 'whiteRook', 'blackRook', 'whiteKnight', 'blackKnight', 'whiteBishop', 'blackBishop', 
           'whiteKing', 'blackKing', 'whiteQueen', 'blackQueen']
 
-def setUptheBoard(chessBoard: chessBoardClass.chessBoard, screen, boardPosition: list, listOfSquares: list, dictOfSquares: dict):
+def setUptheBoard(chessBoard: chessBoardClass.chessBoard, screen, boardPosition: list, listOfSquares: list, dictOfSquares: dict, boardMode):
     screen = pygame.display.set_mode((1100, 800))
     screen.fill(gray)
     pygame.display.set_caption('Chess')
@@ -41,7 +41,11 @@ def setUptheBoard(chessBoard: chessBoardClass.chessBoard, screen, boardPosition:
                         dictOfSquares[boardPosition[column][row]].append(square)
                     except:
                         dictOfSquares[boardPosition[column][row]] = [square]
-    
+    if boardMode == 'mainMenu':
+        title = pygame.font.SysFont('Helvetica', 40).render('CHESS', False, yellow)
+        buttonFont = pygame.font.SysFont('Helvetica', 20)
+    elif boardMode == '':
+        pass
 def findTheSquare(mousePosition, listOfButtons):
     for button in listOfButtons:
         if button.collidepoint(mousePosition):
