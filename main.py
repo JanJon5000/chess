@@ -59,4 +59,8 @@ while running:
                     setUptheBoard(chessBoard, screen, chessBoard.boardModel, listOfSquares, dictOfSquares)
                     submode = submodes[submode]
                 mode = 'preparingToPickUpAPiece'
+    if mode == 'mate':
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
     pygame.display.update()

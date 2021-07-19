@@ -17,7 +17,3 @@ class chessBoard:
         self.boardModel[-1] = ['white' + piece.capitalize() for piece in possiblePieces]
         self.boardModel[1] = ['blackPawn' for _ in range(self.width)]
         self.boardModel[-2] = ['whitePawn' for _ in range(self.width)]
-
-        #self.boardModel[3][3] = 'blackKing'
-        #self.boardModel[4][5] = 'whiteQueen'
-        #self.boardModel[7][7] = 'whiteKing'

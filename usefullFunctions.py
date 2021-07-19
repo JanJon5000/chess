@@ -11,7 +11,7 @@ pieces = ['whitePawn', 'blackPawn', 'whiteRook', 'blackRook', 'whiteKnight', 'bl
           'whiteKing', 'blackKing', 'whiteQueen', 'blackQueen']
 
 def setUptheBoard(chessBoard: chessBoardClass.chessBoard, screen, boardPosition: list, listOfSquares: list, dictOfSquares: dict):
-    screen = pygame.display.set_mode((1000, 800))
+    screen = pygame.display.set_mode((1100, 800))
     screen.fill(gray)
     pygame.display.set_caption('Chess')
     for row in range(chessBoard.width):
@@ -41,7 +41,7 @@ def setUptheBoard(chessBoard: chessBoardClass.chessBoard, screen, boardPosition:
                         dictOfSquares[boardPosition[column][row]].append(square)
                     except:
                         dictOfSquares[boardPosition[column][row]] = [square]
-
+    
 def findTheSquare(mousePosition, listOfButtons):
     for button in listOfButtons:
         if button.collidepoint(mousePosition):
@@ -104,6 +104,10 @@ def pureIfItIsACheck(screen, chessBoard, color:str):
         return False
     else:
         return True
+
+def ifItIsAMate():
+    pass
+
 def ifItIsACheck(screen, chessBoard, color: str):
     actualMoves = []
     dangers = []
