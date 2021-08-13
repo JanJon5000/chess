@@ -10,8 +10,8 @@ destinationButton = None
 pieces = ['whitePawn', 'blackPawn', 'whiteRook', 'blackRook', 'whiteKnight', 'blackKnight', 'whiteBishop', 'blackBishop', 
           'whiteKing', 'blackKing', 'whiteQueen', 'blackQueen']
 
-def setUptheBoard(chessBoard: chessBoardClass.chessBoard, screen, boardPosition: list, listOfSquares: list, dictOfSquares: dict, boardMode):
-    screen = pygame.display.set_mode((1100, 800))
+def setUptheBoard(chessBoard: chessBoardClass.chessBoard, screen, boardPosition: list, listOfSquares: list, dictOfSquares: dict):
+    screen = pygame.display.set_mode((800, 800))
     screen.fill(gray)
     pygame.display.set_caption('Chess')
     for row in range(chessBoard.width):
@@ -41,11 +41,6 @@ def setUptheBoard(chessBoard: chessBoardClass.chessBoard, screen, boardPosition:
                         dictOfSquares[boardPosition[column][row]].append(square)
                     except:
                         dictOfSquares[boardPosition[column][row]] = [square]
-    if boardMode == 'mainMenu':
-        title = pygame.font.SysFont('Helvetica', 40).render('CHESS', False, yellow)
-        buttonFont = pygame.font.SysFont('Helvetica', 20)
-    elif boardMode == '':
-        pass
 def findTheSquare(mousePosition, listOfButtons):
     for button in listOfButtons:
         if button.collidepoint(mousePosition):
@@ -109,9 +104,56 @@ def pureIfItIsACheck(screen, chessBoard, color:str):
     else:
         return True
 
-def ifItIsAMate():
-    pass
-
+def dangers(screen, chessBoard, color:str):
+    dangers = []
+    for row in chessBoard.boardModel:
+        for piece in row:
+            if piece == color + 'King':
+                r = row.index(piece)
+                c = chessBoard.boardModel.index(row)
+    for index in range(4):
+        for ammount in [ _ for _ in range(1, 8)]:
+            moves = {  0:{'column':c+ammount, 'row':r+ammount},
+                        1:{'column':c-ammount, 'row':r-ammount},
+                        2:{'column':c-ammount, 'row':r+ammount},
+                        3:{'column':c+ammount, 'row':r-ammount},
+                        4:{'column':c, 'row':r+ammount},
+                        5:{'column':c, 'row':r-ammount},
+                        6:{'column':c+ammount, 'row':r},
+                        7:{'column':c-ammount, 'row':r}       }
+            try:
+                column = moves[index]['column']
+                row = moves[index]['row']
+            except:
+                pass
+            try:
+                square = chessBoard.boardModel[column][row]
+            except:
+                break
+            try:
+                if square == None:
+                    continue
+                elif color in square:
+                    break
+                elif not column < 0 and not row < 0:
+                    dangers.append({'piece':square, 'column':column, 'row':row})
+                    break
+            except:
+                pass
+    moves = [(-2, (-1, 1)), (-1, (-2, 2)), (2, (-1, 1)), (1, (-2, 2))]
+    for coordinates in moves:
+        try:
+            if 'Knight' in chessBoard.boardModel[c-coordinates[0]][r-coordinates[1][0]] and color not in chessBoard.boardModel[c-coordinates[0]][r-coordinates[1][0]] and c-coordinates[0] >= 0 and r-coordinates[1][0] >= 0:
+                dangers.append({'piece':chessBoard.boardModel[c-coordinates[0]][r-coordinates[1][0]], 'column':c-coordinates[0], 'row':r-coordinates[1][0]})
+        except:
+            pass
+        try:
+            if 'Knight' in chessBoard.boardModel[c-coordinates[0]][r-coordinates[1][1]] and color not in chessBoard.boardModel[c-coordinates[0]][r-coordinates[1][1]] and c-coordinates[0] >= 0 and r-coordinates[1][1] >= 0:
+                dangers.append({'piece':chessBoard.boardModel[c-coordinates[0]][r-coordinates[1][1]], 'column':c-coordinates[0], 'row':r-coordinates[1][1]})
+        except:
+            pass
+    return dangers
+    
 def ifItIsACheck(screen, chessBoard, color: str):
     actualMoves = []
     dangers = []
@@ -371,3 +413,9 @@ def checkIfTheMoveIsPossible(screen, chessBoard, StartButton, FinishButton):
         return True
     return False
 
+def ifItIsAMate(screen, chessBoard, color):
+    dangersList = dangers(screen, chessBoard, color)
+    if len(dangersList) > 1:
+        pass
+    else:
+        pass
