@@ -5,6 +5,7 @@ from pygame.constants import MOUSEBUTTONDOWN
 import chessBoardClass
 from usefullFunctions import setUptheBoard, findTheSquare, checkIfTheMoveIsPossible
 pygame.init()
+import sys
 
 pieces = ['whitePawn', 'blackPawn', 'whiteRook', 'blackRook', 'whiteKnight', 'blackKnight', 'whiteBishop', 'blackBishop', 
           'whiteKing', 'blackKing', 'whiteQueen', 'blackQueen']
@@ -16,7 +17,6 @@ dictOfSquares = dict()
 chessBoard = chessBoardClass.chessBoard()
 screen = pygame.display.set_mode((400, 400))
 secondClick = False
-running = True
 clickedButton = None
 mouseSignature = None
 destinationButton = None
@@ -24,19 +24,22 @@ submode = 'white'
 submodes = {'white':'black', 'black':'white'}
 
 mode = 'preparingToPickUpAPiece'
+clock = pygame.time.Clock()
 
 setUptheBoard(chessBoard, screen, chessBoard.boardModel, listOfSquares, dictOfSquares)
-while running:
+while True:
     if mode == 'menu':
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                pygame.quit()
+                sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pass
     if mode == 'preparingToPickUpAPiece':
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                pygame.quit()
+                sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_position = event.pos
                 clickedButton = findTheSquare(mouse_position, listOfSquares)
@@ -45,7 +48,8 @@ while running:
     if mode == 'pickedUpAPiece':
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                pygame.quit()
+                sys.exit()
             if event.type == pygame.MOUSEBUTTONUP:
                 mouse_position = event.pos
                 destinationButton = findTheSquare(mouse_position, listOfSquares)
@@ -62,5 +66,7 @@ while running:
     if mode == 'mate':
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                pygame.quit()
+                sys.exit()
+
     pygame.display.update()
