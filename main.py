@@ -1,9 +1,10 @@
 import pygame
 from pprint import pprint
 from math import ceil
+from pygame import color
 from pygame.constants import MOUSEBUTTONDOWN
 import chessBoardClass
-from usefullFunctions import setUptheBoard, findTheSquare, checkIfTheMoveIsPossible
+from usefullFunctions import setUptheBoard, findTheSquare, checkIfTheMoveIsPossible, ifItIsAMate
 pygame.init()
 import sys
 
@@ -36,6 +37,9 @@ while True:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pass
     if mode == 'preparingToPickUpAPiece':
+        if ifItIsAMate(screen, chessBoard, submode):
+            print('mat')
+            mode = 'mate'
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -68,5 +72,8 @@ while True:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                pygame.quit()
+                sys.exit()
     pygame.display.update()
+    clock.tick(60)

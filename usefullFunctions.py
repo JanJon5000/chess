@@ -46,10 +46,10 @@ def findTheSquare(mousePosition, listOfButtons):
         if button.collidepoint(mousePosition):
             return button
 def findTheKing(color, chessBoard):
-    for row in chessBoard:
+    for row in chessBoard.boardModel:
         for column in row:
             if column == (color + 'King'):
-                return pygame.Rect(row.index(column)*squareSize, chessBoard.index(row)*squareSize, squareSize, squareSize), row.index(column), chessBoard.index(row)
+                return pygame.Rect(row.index(column)*squareSize, chessBoard.boardModel.index(row)*squareSize, squareSize, squareSize)
     return -1, -1, -1
 def pureIfItIsACheck(screen, chessBoard, color:str):
     dangers = []
@@ -413,9 +413,28 @@ def checkIfTheMoveIsPossible(screen, chessBoard, StartButton, FinishButton):
         return True
     return False
 
-def ifItIsAMate(screen, chessBoard, color):
+def ifItIsAMate(screen, chessBoard, color, ):
     dangersList = dangers(screen, chessBoard, color)
     if len(dangersList) > 1:
-        pass
+        surroundingSquares = [(-1, -1), (-1, 0), (1, -1), (0, -1), (0, 1), (-1, 1), (1, 0), (1, 1)]
+        kingSquare = findTheKing(color, chessBoard)
+        kingSquare = (int(kingSquare.y/squareSize), int(kingSquare.x/squareSize))
+        for square in surroundingSquares:
+            try:
+                if color not in str(chessBoard.boardModel[kingSquare[0]+square[0]][kingSquare[1]+square[1]]):
+                    if kingSquare[0]+square[0] >= 0 and kingSquare[1]+square[1] >= 0:
+                        currentlyReviewedSquare = chessBoard.boardModel[kingSquare[0]+square[0]][kingSquare[1]+square[1]]
+                        chessBoard.boardModel[kingSquare[0]][kingSquare[1]] = None
+                        chessBoard.boardModel[kingSquare[0]+square[0]][kingSquare[1]+square[1]] = color + 'King'
+                        if pureIfItIsACheck(screen, chessBoard, color):
+                            chessBoard.boardModel[kingSquare[0]][kingSquare[1]] = color + 'King'
+                            chessBoard.boardModel[kingSquare[0]+square[0]][kingSquare[1]+square[1]] = currentlyReviewedSquare
+                        else:
+                            chessBoard.boardModel[kingSquare[0]][kingSquare[1]] = color + 'King'
+                            chessBoard.boardModel[kingSquare[0]+square[0]][kingSquare[1]+square[1]] = currentlyReviewedSquare
+                            return False
+            except:
+                pass
+        return True
     else:
-        pass
+        
