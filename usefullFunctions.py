@@ -210,7 +210,8 @@ def ifItIsACheck(screen, chessBoard, color: str):
     elif len(dangers) < 1:
         return False
 
-def checkIfTheMoveIsPossible(screen, chessBoard, StartButton, FinishButton):
+def checkIfTheMoveIsPossible(screen, chessBoard, StartButton, FinishButton, movedPiece):
+    movedPieceSave = movedPiece['piece']
     row = int(StartButton.x/squareSize)
     column = int(StartButton.y/squareSize)
     possibleSquares = []
@@ -223,6 +224,7 @@ def checkIfTheMoveIsPossible(screen, chessBoard, StartButton, FinishButton):
         elif chessBoard.boardModel[column][row][0:5] == 'white':
             color = 'white'
         
+        movedPiece['piece'] = color + 'Bishop'
         for index in range(4):
             for ammount in [1, 2, 3, 4, 5, 6, 7, 8]:
                 helpDictionary = {  0:{'column':column+ammount, 'row':row+ammount},
@@ -254,6 +256,7 @@ def checkIfTheMoveIsPossible(screen, chessBoard, StartButton, FinishButton):
         elif chessBoard.boardModel[column][row][0:5] == 'white':
             color = 'white'
 
+        movedPiece['piece'] = color + 'Rook'
         for index in range(4):
             for ammount in [1, 2, 3, 4, 5, 6, 7, 8]:
                 helpDictionary = {  0:{'column':column+ammount, 'row':row},
@@ -284,6 +287,8 @@ def checkIfTheMoveIsPossible(screen, chessBoard, StartButton, FinishButton):
             color = 'black'
         elif chessBoard.boardModel[column][row][0:5] == 'white':
             color = 'white'
+
+        movedPiece['piece'] = color + 'King'
         for change1 in (1, -1):
             for change2 in (-1, 0, 1):
                 try:
@@ -305,6 +310,8 @@ def checkIfTheMoveIsPossible(screen, chessBoard, StartButton, FinishButton):
             color = 'black'
         elif chessBoard.boardModel[column][row][0:5] == 'white':
             color = 'white'
+        
+        movedPiece['piece'] = color + 'Pawn'
         if chessBoard.boardModel[column][row] != None:
             if chessBoard.boardModel[column][row][0:5] == 'black':
                 try:
@@ -348,6 +355,7 @@ def checkIfTheMoveIsPossible(screen, chessBoard, StartButton, FinishButton):
         elif chessBoard.boardModel[column][row][0:5] == 'white':
             color = 'white'
         
+        movedPiece['piece'] = color + 'Queen'
         for index in range(8):
             for ammount in [1, 2, 3, 4, 5, 6, 7, 8]:
                 helpDictionary = {  0:{'column':column+ammount, 'row':row+ammount},
@@ -383,6 +391,7 @@ def checkIfTheMoveIsPossible(screen, chessBoard, StartButton, FinishButton):
         elif chessBoard.boardModel[column][row][0:5] == 'white':
             color = 'white'
 
+        movedPiece['piece'] = color + 'Knight'
         possibleMoves = [ (-2, (-1, 1)), (-1, (-2, 2)), (2, (-1, 1)), (1, (-2, 2))]
         for coordinates in possibleMoves:
             try:
@@ -407,19 +416,23 @@ def checkIfTheMoveIsPossible(screen, chessBoard, StartButton, FinishButton):
             if pureIfItIsACheck(screen, chessBoard, color):
                 chessBoard.boardModel[column][row] = chessBoard.boardModel[c2][r2]
                 chessBoard.boardModel[c2][r2] = None
+                movedPiece['piece'] = movedPieceSave
             else:
+                movedPiece['column'] = c2
+                movedPiece['row'] = r2
                 return True
     elif FinishButton in possibleSquares:
+        movedPiece['column'] = int(FinishButton.y/squareSize)
+        movedPiece['row'] = int(FinishButton.x/squareSize)
         return True
+    movedPiece['piece'] = movedPieceSave
     return False
 
-def ifItIsAMate(screen, chessBoard, color, ):
-    dangersList = dangers(screen, chessBoard, color)
-    if len(dangersList) > 1:
-        surroundingSquares = [(-1, -1), (-1, 0), (1, -1), (0, -1), (0, 1), (-1, 1), (1, 0), (1, 1)]
-        kingSquare = findTheKing(color, chessBoard)
-        kingSquare = (int(kingSquare.y/squareSize), int(kingSquare.x/squareSize))
-        for square in surroundingSquares:
+def areThereEspcapes(chessBoard, screen, color):
+    surroundingSquares = [(-1, -1), (-1, 0), (1, -1), (0, -1), (0, 1), (-1, 1), (1, 0), (1, 1)]
+    kingSquare = findTheKing(color, chessBoard)
+    kingSquare = (int(kingSquare.y/squareSize), int(kingSquare.x/squareSize))
+    for square in surroundingSquares:
             try:
                 if color not in str(chessBoard.boardModel[kingSquare[0]+square[0]][kingSquare[1]+square[1]]):
                     if kingSquare[0]+square[0] >= 0 and kingSquare[1]+square[1] >= 0:
@@ -435,6 +448,24 @@ def ifItIsAMate(screen, chessBoard, color, ):
                             return False
             except:
                 pass
-        return True
+    return True
+
+def ifItIsAMate(screen, chessBoard, color, lastMove: dict):
+    surroundingSquares = [(-1, -1), (-1, 0), (1, -1), (0, -1), (0, 1), (-1, 1), (1, 0), (1, 1)]
+    kingSquare = findTheKing(color, chessBoard)
+    kingSquare = (int(kingSquare.y/squareSize), int(kingSquare.x/squareSize))
+    dangersList = dangers(screen, chessBoard, color)
+    if len(dangersList) > 1:
+        return areThereEspcapes(chessBoard, screen, color)
     else:
-        
+        truth = areThereEspcapes(chessBoard, screen, color)
+        dangersList = dangersList[0]
+        #linia bądź rząd - ten sam - wieża/królowa
+        if dangersList['column'] == kingSquare[1]:
+            pass
+        elif dangersList['row'] == kingSquare[0]:
+            pass
+        #przekątne/koń
+        elif dangersList['row'] != kingSquare[0] and dangersList['column'] != kingSquare[1]:
+            pass
+            

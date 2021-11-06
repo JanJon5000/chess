@@ -23,6 +23,8 @@ mouseSignature = None
 destinationButton = None
 submode = 'white'
 submodes = {'white':'black', 'black':'white'}
+lastMove = {'piece':None, 'column':None, 'row':None}
+copyOfLastMove = {'piece':None, 'column':None, 'row':None}
 
 mode = 'preparingToPickUpAPiece'
 clock = pygame.time.Clock()
@@ -37,7 +39,8 @@ while True:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pass
     if mode == 'preparingToPickUpAPiece':
-        if ifItIsAMate(screen, chessBoard, submode):
+        
+        if ifItIsAMate(screen, chessBoard, submode, lastMove):
             print('mat')
             mode = 'mate'
         for event in pygame.event.get():
@@ -57,7 +60,8 @@ while True:
             if event.type == pygame.MOUSEBUTTONUP:
                 mouse_position = event.pos
                 destinationButton = findTheSquare(mouse_position, listOfSquares)
-                if checkIfTheMoveIsPossible(screen, chessBoard, clickedButton, destinationButton) and mouseSignature[0:5] == submode:
+                copyOfLastMove = lastMove
+                if checkIfTheMoveIsPossible(screen, chessBoard, clickedButton, destinationButton, lastMove) and mouseSignature[0:5] == submode:
                     #autopromotion to queen - change that in the future
                     if (destinationButton.y/100 == chessBoard.height-1 or destinationButton.y/100 == 0) and 'Pawn' in chessBoard.boardModel[int(clickedButton.y/100)][int(clickedButton.x/100)]:
                         chessBoard.boardModel[int(destinationButton.y/100)][int(destinationButton.x/100)] = mouseSignature[0:5] + 'Queen'
@@ -66,6 +70,8 @@ while True:
                     chessBoard.boardModel[int(clickedButton.y/100)][int(clickedButton.x/100)] = None
                     setUptheBoard(chessBoard, screen, chessBoard.boardModel, listOfSquares, dictOfSquares)
                     submode = submodes[submode]
+                else:
+                    lastMove = copyOfLastMove
                 mode = 'preparingToPickUpAPiece'
     if mode == 'mate':
         for event in pygame.event.get():
