@@ -460,12 +460,16 @@ def ifItIsAMate(screen, chessBoard, color, lastMove: dict):
     else:
         truth = areThereEspcapes(chessBoard, screen, color)
         dangersList = dangersList[0]
+        squaresToCover = []
         #linia bądź rząd - ten sam - wieża/królowa
         if dangersList['column'] == kingSquare[1]:
-            pass
+            for column in range(min(dangersList['column'], kingSquare[1]), max(dangersList['column'], kingSquare[1])):
+                squaresToCover.append(pygame.Rect(column, dangersList['row'], squareSize, squareSize))
         elif dangersList['row'] == kingSquare[0]:
-            pass
+            for row in range(min(dangersList['row'], kingSquare[0]), max(dangersList['row'], kingSquare[0])):
+                squaresToCover.append(pygame.Rect(row, dangersList['column'], squareSize, squareSize))
         #przekątne/koń
         elif dangersList['row'] != kingSquare[0] and dangersList['column'] != kingSquare[1]:
             pass
-            
+        
+        return True
