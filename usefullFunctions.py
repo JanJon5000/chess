@@ -464,12 +464,14 @@ def ifItIsAMate(screen, chessBoard, color, lastMove: dict):
         #linia bądź rząd - ten sam - wieża/królowa
         if dangersList['column'] == kingSquare[1]:
             for column in range(min(dangersList['column'], kingSquare[1]), max(dangersList['column'], kingSquare[1])):
-                squaresToCover.append(pygame.Rect(column, dangersList['row'], squareSize, squareSize))
+                squaresToCover.append(pygame.Rect(column*squareSize, dangersList['row']*squareSize, squareSize, squareSize))
         elif dangersList['row'] == kingSquare[0]:
             for row in range(min(dangersList['row'], kingSquare[0]), max(dangersList['row'], kingSquare[0])):
-                squaresToCover.append(pygame.Rect(row, dangersList['column'], squareSize, squareSize))
+                squaresToCover.append(pygame.Rect(row*squareSize, dangersList['column']*squareSize, squareSize, squareSize))
         #przekątne/koń
         elif dangersList['row'] != kingSquare[0] and dangersList['column'] != kingSquare[1]:
-            pass
-        
+            if dangersList['piece'] == 'Knight':
+                squaresToCover.append(pygame.Rect(dangersList['row']*squareSize, dangersList['column']*squareSize, squareSize, squareSize))
+            else:
+                pass
         return True
