@@ -459,8 +459,15 @@ def ifItIsAMate(screen, chessBoard, color, lastMove: dict):
         return areThereEspcapes(chessBoard, screen, color)
     else:
         truth = areThereEspcapes(chessBoard, screen, color)
-        dangersList = dangersList[0]
+        try:
+            dangersList = dangersList[0]
+        except:
+            return False
         squaresToCover = []
+        squaresToCover.append(pygame.Rect(dangersList['row']*squareSize, dangersList['column']*squareSize, squareSize, squareSize))
+        #czy są pola do ucieczki
+        if truth == False:
+            return truth
         #linia bądź rząd - ten sam - wieża/królowa
         if dangersList['column'] == kingSquare[1]:
             for column in range(min(dangersList['column'], kingSquare[1]), max(dangersList['column'], kingSquare[1])):
@@ -473,5 +480,33 @@ def ifItIsAMate(screen, chessBoard, color, lastMove: dict):
             if dangersList['piece'] == 'Knight':
                 squaresToCover.append(pygame.Rect(dangersList['row']*squareSize, dangersList['column']*squareSize, squareSize, squareSize))
             else:
-                pass
+                finish = abs(dangersList['row']-kingSquare[0])
+                if dangersList['row'] > kingSquare[0] and dangersList['column'] > kingSquare[1]:
+                    incrmt_x = 1
+                    incrmt_y = 1
+                elif dangersList['row'] > kingSquare[0] and dangersList['column'] < kingSquare[1]:
+                    incrmt_x = 1
+                    incrmt_y = -1
+                elif dangersList['row'] < kingSquare[0] and dangersList['column'] > kingSquare[1]:
+                    incrmt_x = -1
+                    incrmt_y = 1
+                elif dangersList['row'] < kingSquare[0] and dangersList['column'] < kingSquare[1]:
+                    incrmt_x = -1
+                    incrmt_y = -1
+
+                for i in range(finish):
+                    try:
+                        squaresToCover.append(pygame.Rect(squareSize*(kingSquare[0]+incrmt_x*i), squareSize*(kingSquare[1]+incrmt_y*i), squareSize, squareSize))
+                    except:
+                        pass
+            
+            for row in chessBoard.boardModel:
+                for element in row:
+                    try:
+                        if color in element:
+                            for button in squaresToCover:
+                                if checkIfTheMoveIsPossible(screen, chessBoard, pygame.Rect(squareSize*chessBoard.boardModel.index(row), squareSize*row.index(element), squareSize, squareSize), button, lastMove) == True:
+                                    return False
+                    except:
+                        pass
         return True
